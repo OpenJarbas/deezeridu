@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
 	name = "deezeridu",
-	version = "0.0.1a5",
+	version = "0.0.1",
 	description = "Downloads songs, albums or playlists from deezer",
 	long_description_content_type = "text/markdown",
 	license = "CC BY-NC-SA 4.0",
