@@ -2,8 +2,8 @@
 
 
 class Playlist:
-    def __init__(self) -> None:
-        self.__t_list = []
+    def __init__(self, tracklist=None) -> None:
+        self.__t_list = tracklist or []
         self.zip_path = None
 
     @property

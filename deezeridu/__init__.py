@@ -21,7 +21,7 @@ from .models import (
 )
 
 
-class PyDeezer:
+class Deezer:
     def __init__(
             self,
             arl=None,
@@ -229,8 +229,7 @@ class PyDeezer:
 
             for track in playlist_json
         ]
-
-        return names
+        return Playlist(names)
 
     def download(
             self, link,
@@ -252,7 +251,7 @@ class PyDeezer:
 
         smart.source = source
 
-        if "track/" in link:
+        if "first_result/" in link:
             if "deezer.com" in link:
                 func = self.download_track
 
@@ -269,7 +268,7 @@ class PyDeezer:
                 method_save=2
             )
 
-            smart.type = "track"
+            smart.type = "first_result"
             smart._track = track
 
         elif "album/" in link:
@@ -292,6 +291,22 @@ class PyDeezer:
 
             smart.type = "album"
             smart._album = album
+        elif "artist/" in link:
+            if "deezer.com" in link:
+                func = self.download_artist_toptracks
+            else:
+                raise InvalidLink(link)
+
+            playlist = func(
+                link,
+                output_dir=output_dir,
+                quality_download=quality_download,
+                recursive_quality=recursive_quality,
+                recursive_download=recursive_download,
+                not_interface=not_interface
+            )
+            smart.type = "playlist"
+            smart._playlist = playlist
 
         elif "playlist/" in link:
             if "deezer.com" in link:
