@@ -17,7 +17,7 @@ from .exceptions import (
 )
 from .models import (
     Track, Album, Playlist,
-    Preferences, Smart
+    Preferences
 )
 
 
@@ -240,25 +240,13 @@ class Deezer:
             not_interface=False,
             make_zip=False,
             method_save=2
-    ) -> Smart:
+    ):
 
         link_is_valid(link)
         link = what_kind(link)
-        smart = Smart()
 
-        if "deezer.com" in link:
-            source = "https://deezer.com"
-
-        smart.source = source
-
-        if "first_result/" in link:
-            if "deezer.com" in link:
-                func = self.download_track
-
-            else:
-                raise InvalidLink(link)
-
-            track = func(
+        if "first_result/" in link or "track/" in link:
+            return self.download_track(
                 link,
                 output_dir=output_dir,
                 quality_download=quality_download,
@@ -267,18 +255,8 @@ class Deezer:
                 not_interface=not_interface,
                 method_save=2
             )
-
-            smart.type = "first_result"
-            smart._track = track
-
         elif "album/" in link:
-            if "deezer.com" in link:
-                func = self.download_album
-
-            else:
-                raise InvalidLink(link)
-
-            album = func(
+            return self.download_album(
                 link,
                 output_dir=output_dir,
                 quality_download=quality_download,
@@ -288,16 +266,8 @@ class Deezer:
                 make_zip=make_zip,
                 method_save=2
             )
-
-            smart.type = "album"
-            smart._album = album
         elif "artist/" in link:
-            if "deezer.com" in link:
-                func = self.download_artist_toptracks
-            else:
-                raise InvalidLink(link)
-
-            playlist = func(
+            return self.download_artist_toptracks(
                 link,
                 output_dir=output_dir,
                 quality_download=quality_download,
@@ -305,17 +275,9 @@ class Deezer:
                 recursive_download=recursive_download,
                 not_interface=not_interface
             )
-            smart.type = "playlist"
-            smart._playlist = playlist
 
         elif "playlist/" in link:
-            if "deezer.com" in link:
-                func = self.download_playlist
-
-            else:
-                raise InvalidLink(link)
-
-            playlist = func(
+            return self.download_playlist(
                 link,
                 output_dir=output_dir,
                 quality_download=quality_download,
@@ -329,4 +291,4 @@ class Deezer:
             smart.type = "playlist"
             smart._playlist = playlist
 
-        return smart
+        raise InvalidLink(link)
