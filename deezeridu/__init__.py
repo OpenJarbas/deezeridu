@@ -13,12 +13,13 @@ from .utils import (
 )
 from .exceptions import (
     InvalidLink, TrackNotFound,
-    NoDataApi, AlbumNotFound
+    NoDataApi, AlbumNotFound, CredentialsMissing
 )
 from .models import (
     Track, Album, Playlist,
     Preferences
 )
+from json_database import JsonConfigXDG
 
 
 class Deezer:
@@ -31,6 +32,12 @@ class Deezer:
         if arl:
             self.__gw_api = Gateway(arl=arl)
         else:
+            if not email or not  password:
+                creds = JsonConfigXDG("deezer", subfolder="deezeridu")
+                email = creds.get("email")
+                password = creds.get("password")
+            if not email or not  password:
+                raise CredentialsMissing
             self.__gw_api = Gateway(
                 email=email,
                 password=password

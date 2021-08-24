@@ -81,3 +81,7 @@ class BadCredentials(Exception):
                 self.msg = f"Wrong credentials email: {self.email}, password: {self.password}"
 
         super().__init__(self.msg)
+
+
+class CredentialsMissing(Exception):
+    """ Deezer credentials not set! """
